@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/registerUser.dto';
 
@@ -18,7 +18,12 @@ export class AuthController {
     }
 
     @Get('/all-users')
-    getAll() {
-        return this.authService.getAllUser();
+    async getAll() {
+        return await this.authService.getAllUser();
+    }
+
+    @Get("/:id")
+    async getSingleUser(@Param('id') id: string) {
+        return await this.authService.getSingleUsers(id);
     }
 }
