@@ -1,18 +1,29 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import { RegisterDto } from 'src/auth/dto/registerUser.dto';
+import { User } from './schemas/userSchema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class UserService {
-    createUser(registerUserDto: RegisterDto) {
 
+    constructor(@InjectModel(User.name) private UserModel: Model<User>) { }
+    async createUser(registerUserDto: RegisterDto) {
 
-        // ? task store data in mongodb
+        const exitsUser = await this.UserModel.findOne({ email: registerUserDto.email });
 
-        return {
-            message: "User create successfully!!!",
-            data: { registerUserDto }
+        if (exitsUser) {
+            throw new Error("user already exits");
         }
+
+        // * task store data in mongodb
+        return await this.UserModel.create({
+            fName: registerUserDto.fName,
+            lName: registerUserDto.lName,
+            email: registerUserDto.email,
+            password: registerUserDto.password
+        })
     }
 
     getAll() {
