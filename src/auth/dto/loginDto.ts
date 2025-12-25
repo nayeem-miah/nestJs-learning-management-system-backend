@@ -1,14 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable prettier/prettier */
-import { IsEmail, IsString } from "class-validator";
-export class RegisterDto {
-    @IsString()
-    fName: string;
+import { IsString } from 'class-validator';
 
+export class loginDto {
     @IsString()
-    lName: string;
-
-    @IsEmail()
     email: string;
 
     @IsString()
