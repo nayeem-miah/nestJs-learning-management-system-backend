@@ -1,15 +1,24 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
+
+import { Body, Controller, Get, Param, Post, Request, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/registerUser.dto';
 import { loginDto } from './dto/loginDto';
 import type { Response } from 'express';
+import { AuthGuard } from './auth.guard';
+import { UserService } from '../user/user.service';
 
 @Controller('auth')  // ? route -------> /auth/register
 export class AuthController {
     // AuthService: AuthService;
 
-    constructor(private readonly authService: AuthService) {
+    constructor(
+        private readonly authService: AuthService,
+        private readonly UserService: UserService
+
+    ) {
         // this.AuthService = authService;
     }
 
@@ -18,6 +27,22 @@ export class AuthController {
         const result = await this.authService.registerUser(registerUserDto)
         return result;
     }
+
+
+    @UseGuards(AuthGuard)
+    @Get('/profile')
+    async getProfile(@Request() req) {
+        const userId = req.user.sub;
+
+        const user = await this.authService.getProfileById(userId)
+
+        return {
+            message: "user profile get successfully",
+            success: true,
+            data: user
+        }
+    }
+
 
     @Get('/all-users')
     async getAll() {
@@ -47,7 +72,10 @@ export class AuthController {
 
         return {
             message: 'login success',
+            access_token: result.access_token,
             data: result.data,
         };
     }
+
+
 }

@@ -15,7 +15,7 @@ import { User, UserSchema } from 'src/user/schemas/userSchema';
         JwtModule.register({
             global: true,
             secret: process.env.JWT_SECRET,
-            signOptions: { expiresIn: '60s' },
+            signOptions: { expiresIn: '1d' },
         },
         ),
         MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])

@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import bcrypt from "bcrypt";
@@ -69,4 +69,17 @@ export class AuthService {
 
         return { access_token: token, data: user }
     }
+
+    async getProfileById(id: string) {
+
+
+        const user = await this.UserModule.findById(id);
+
+        if (!user) {
+            throw new NotFoundException("User not found");
+        }
+
+        return user;
+    }
+
 }
