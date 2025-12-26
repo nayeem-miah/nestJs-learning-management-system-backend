@@ -8,6 +8,7 @@ import { User } from 'src/user/schemas/userSchema';
 import { UserService } from '../user/user.service';
 import { loginDto } from './dto/loginDto';
 import { RegisterDto } from './dto/registerUser.dto';
+import { Role } from 'src/user/user.types';
 
 @Injectable()
 export class AuthService {
@@ -25,7 +26,8 @@ export class AuthService {
         // logic for user register
         const result = await this.UserService.createUser({ ...registerUserDto, password: hasPass });
 
-        const payload = { sub: result._id, }
+        // ! not allow user to create admin
+        const payload = { sub: result._id, role: Role.admin }
 
         const token = await this.jwtService.signAsync(payload)
 
